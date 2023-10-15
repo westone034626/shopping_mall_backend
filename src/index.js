@@ -30,6 +30,8 @@ app.use((error, req, res, next) => {
     res.send(error.message || '서버 에러 발생');
 });
 
+app.use('/users', require('./routes/users'));
+
 app.use(express.static(path.join(__dirname, '../uploads')));
 
 app.listen(port, () => {
