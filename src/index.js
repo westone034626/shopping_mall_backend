@@ -1,9 +1,16 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express();
 const port = 4000;
+
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('connected with mongo db'))
+    .catch(console.log);
 
 app.use(cors());
 app.use(express.json());
