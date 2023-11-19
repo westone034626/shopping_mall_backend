@@ -11,6 +11,8 @@ router.get('/auth', auth, async (req, res, next) => {
         name: req.user.name,
         role: req.user.role,
         image: req.user.image,
+        cart: req.user.cart,
+        history: req.user.history,
     });
 });
 
@@ -43,6 +45,14 @@ router.post('/login', async (req, res, next) => {
         const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         return res.json({ user, accessToken });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post('/logout', auth, async (req, res, next) => {
+    try {
+        return res.sendStatus(200);
     } catch (error) {
         next(error);
     }
