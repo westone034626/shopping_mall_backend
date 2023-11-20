@@ -15,6 +15,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('file');
 
+router.get('/', async (req, res, next) => {
+    try {
+        const products = await Product.find().populate('writer');
+
+        return res.status(200).json({
+            products,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.post('/', auth, async (req, res, next) => {
     try {
         const post = new Product(req.body);
