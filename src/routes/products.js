@@ -29,6 +29,8 @@ router.get('/', async (req, res, next) => {
                     $gte: req.query.filters[key][0],
                     $lte: req.query.filters[key][1],
                 };
+            } else if (key === 'searchTerm') {
+                findArgs['$text'] = { '$search': req.query.filters[key] };
             } else {
                 findArgs[key] = req.query.filters[key];
             }
