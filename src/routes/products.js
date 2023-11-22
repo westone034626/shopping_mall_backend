@@ -56,6 +56,23 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+router.get('/:id', async (req, res, next) => {
+    const type = req.query.type;
+
+    const productIds = req.params.id;
+
+    // productId를 이용해서 DB에서 productId와 같은 product 정보를 가져옵니다.
+    try {
+        const product = await Product
+            .find({ _id: { $in: productIds } })
+            .populate('writer');
+
+        return res.status(200).send(product);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.post('/', auth, async (req, res, next) => {
     try {
         const post = new Product(req.body);
