@@ -58,4 +58,50 @@ router.post('/logout', auth, async (req, res, next) => {
     }
 });
 
+router.post('/cart', auth, async (req, res, next) => {
+    try {
+        // User collection에 해당 유저의 정보를 가져오기.
+        const userInfo = await User.findOne({ _id: req.user._id });
+
+        // 가져온 정보에서 카트에다 넣으려는 상품이 이미 존재하는지 확인
+        let duplicated = false;
+        userInfo.cart.forEach(item => {
+            if (req.body.productId === item.id) {
+                duplicated = true;
+            }
+        });
+
+        // 상품이 있을 때
+        if (duplicated) {
+            const user = await User.findOneAndUpdate(
+                { _id: req.user._id, "cart.id": req.body.productId },
+                { $inc: { "cart.$.quantity": 1 } },
+                { new: true }
+            );
+
+            return res.status(201).send(user.cart);
+        }
+        // 새로운 상품이 추가되는 경우
+        else {
+            const user = await User.findOneAndUpdate(
+                { _id: req.user._id },
+                {
+                    $push: {
+                        cart: {
+                            id: req.body.productId,
+                            quantity: 1,
+                            date: Date.now(),
+                        }
+                    }
+                },
+                { new: true }
+            );
+
+            return res.status(201).send(user.cart);
+        }
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;
