@@ -59,7 +59,9 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
     const type = req.query.type;
 
-    const productIds = req.params.id;
+    const productIds = type === 'array'
+        ? req.params.id.split(',')
+        : req.params.id;
 
     // productId를 이용해서 DB에서 productId와 같은 product 정보를 가져옵니다.
     try {
